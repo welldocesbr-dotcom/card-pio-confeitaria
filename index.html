@@ -1,0 +1,168 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Cardápio digital para confeitarias</title>
+<link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Figtree:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2b1a17;--bg:#fffaf8;--calda:#f8e4e8;--line:#ecd9dc;--brand:#c2185b}
+*{box-sizing:border-box;margin:0}
+body{font:16px/1.5 Figtree,system-ui,sans-serif;color:var(--ink);background:var(--bg)}
+h1,h2,h3{font-family:Caprasimo,serif;font-weight:400;line-height:1.1}
+a{color:inherit}button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}.pad{padding:40px 16px}
+.btn{display:inline-block;background:var(--brand);color:#fff;border:0;border-radius:999px;padding:12px 22px;font-weight:700;cursor:pointer;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--brand);border:2px solid currentColor}.btn.sm{padding:6px 14px;font-size:14px}.btn:disabled{opacity:.5}
+input,select,textarea{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:12px;background:#fff;margin-top:4px}
+label{display:block;font-size:14px;font-weight:700;margin-top:14px}
+.hero{background:var(--brand);color:#fff;padding:40px 0 52px;border-radius:0 0 36px 36px}.hero h1{font-size:38px}.hero p{margin-top:8px}
+.pill{display:inline-block;background:#fff;color:var(--ink);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:700;margin-top:14px}
+.link{background:none;border:0;color:#fff;text-decoration:underline;cursor:pointer;margin-top:12px;padding:0}
+.menu{padding-bottom:110px}.sec h2{font-size:26px;margin:28px 0 4px;color:var(--brand)}
+.item{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+.item img,.ph{width:96px;height:96px;object-fit:cover;border-radius:22px;flex:none;background:var(--calda)}
+.t{flex:1;min-width:0}.item h3{font-size:18px}.item p{font-size:14px;opacity:.8;margin:2px 0 6px}.price{font-weight:800}
+.qty{display:inline-flex;align-items:center;gap:10px;margin-top:6px}
+.qty button{width:32px;height:32px;border-radius:50%;border:2px solid var(--brand);background:#fff;color:var(--brand);font-weight:800;cursor:pointer}
+.bar{position:fixed;left:12px;right:12px;bottom:12px;max-width:616px;margin:0 auto;background:var(--ink);color:#fff;border:0;border-radius:999px;padding:16px 22px;display:flex;justify-content:space-between;font-weight:800;cursor:pointer}
+.sheet{position:fixed;inset:0;background:#0007;display:flex;align-items:flex-end;z-index:9}
+.sheet>div{background:var(--bg);width:100%;max-width:640px;margin:0 auto;border-radius:28px 28px 0 0;padding:22px 16px 28px;max-height:92vh;overflow:auto}
+.foot{text-align:center;padding:28px 0;font-size:14px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.tabs button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:8px 16px;font-weight:700;cursor:pointer}
+.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.card{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:16px;margin-top:14px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.sp{justify-content:space-between}
+.sw{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}.sw label{margin:0;display:flex;align-items:center;gap:6px;font-weight:600}.sw input{width:auto;margin:0}
+.dot{width:18px;height:18px;border-radius:50%;display:inline-block}.msg{margin-top:10px;font-weight:600}
+</style></head><body><div id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script src="/config.js"></script>
+<script>
+const sb=supabase.createClient(CFG.url,CFG.key),$=document.getElementById('app')
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+const brl=v=>Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})
+const CORES=[['#c2185b','Framboesa'],['#6d4c41','Chocolate'],['#2e7d6b','Pistache'],['#7b3fa0','Uva'],['#d9480f','Laranja'],['#0f6e8c','Azul']]
+const CATS=['Bolos','Tortas','Doces','Brigadeiros','Cupcakes','Salgados','Bebidas']
+const slugify=t=>t.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)
+const wa=v=>{const d=String(v).replace(/\D/g,'');return d.length<=11?'55'+d:d}
+const msg=t=>{const m=document.getElementById('msg');if(m)m.textContent=t}
+const path=location.pathname.replace(/^\/|\/$/g,'')
+if(path==='')$.innerHTML='<main class="wrap pad"><h1 style="font-size:44px">Seu cardápio de confeitaria em um link</h1><p style="margin:16px 0 28px;font-size:18px">Cadastre bolos, doces e tortas com foto e preço. Compartilhe o link ou o QR Code e receba os pedidos direto no seu WhatsApp.</p><a class="btn" href="/painel">Entrar no painel</a></main>'
+else if(path==='painel')painel();else menu(path)
+
+/* ===== CARDÁPIO PÚBLICO ===== */
+let S,P=[],cart={},F={name:'',date:'',mode:'Retirada',obs:''},open=false,about=false
+async function menu(slug){
+ const {data:s}=await sb.from('stores').select('id,name,tagline,about,address,hours,lead_time,whatsapp,color').eq('slug',slug).maybeSingle()
+ if(!s){$.innerHTML='<main class="wrap pad"><h1>Cardápio não encontrado</h1></main>';return}
+ S=s;document.title=s.name
+ const {data:p}=await sb.from('products').select('*').eq('store_id',s.id).order('category').order('name');P=p||[];drawMenu()}
+const add=(id,d)=>{const n=(cart[id]||0)+d;if(n>0)cart[id]=n;else delete cart[id];drawMenu()}
+const toggleSheet=v=>{open=v;drawMenu()}
+const setF=(k,v)=>F[k]=v
+function drawMenu(){
+ const items=P.filter(p=>cart[p.id]),total=items.reduce((a,p)=>a+p.price*cart[p.id],0),count=Object.values(cart).reduce((a,b)=>a+b,0)
+ const cats=[...new Set(P.map(p=>p.category||'Cardápio'))]
+ $.innerHTML=`<main class="menu" style="--brand:${esc(S.color||'#c2185b')}"><header class="hero"><div class="wrap">
+ <h1>${esc(S.name)}</h1>${S.tagline?`<p>${esc(S.tagline)}</p>`:''}${S.address?`<p>📍 ${esc(S.address)}</p>`:''}${S.hours?`<p>🕒 ${esc(S.hours)}</p>`:''}
+ ${S.lead_time?`<span class="pill">${esc(S.lead_time)}</span>`:''}
+ ${S.about?`<br><button class="link" onclick="about=!about;drawMenu()">Sobre a loja</button>${about?`<p>${esc(S.about)}</p>`:''}`:''}</div></header>
+ <div class="wrap">${P.length?'':'<p style="margin-top:32px">O cardápio ainda está vazio.</p>'}
+ ${cats.map(c=>`<section class="sec"><h2>${esc(c)}</h2>${P.filter(p=>(p.category||'Cardápio')===c).map(p=>`<div class="item">
+  ${p.image_url?`<img src="${esc(p.image_url)}" alt="${esc(p.name)}" loading="lazy">`:'<div class="ph"></div>'}
+  <div class="t"><h3>${esc(p.name)}</h3>${p.description?`<p>${esc(p.description)}</p>`:''}<span class="price">${brl(p.price)}</span><br>
+  ${!p.available?'<em>Esgotado</em>':cart[p.id]?`<span class="qty"><button aria-label="Remover um" onclick="add('${p.id}',-1)">−</button>${cart[p.id]}<button aria-label="Adicionar um" onclick="add('${p.id}',1)">+</button></span>`:`<button class="btn sm" style="margin-top:6px" onclick="add('${p.id}',1)">Adicionar</button>`}
+  </div></div>`).join('')}</section>`).join('')}
+ <p class="foot"><a href="/painel">Painel da loja</a></p></div>
+ ${count?`<button class="bar" onclick="toggleSheet(true)"><span>Ver sacola (${count})</span><span>${brl(total)}</span></button>`:''}
+ ${open?`<div class="sheet" onclick="toggleSheet(false)"><div onclick="event.stopPropagation()"><h2>Sua sacola</h2>
+ ${items.map(p=>`<div class="row sp" style="margin-top:10px"><span>${cart[p.id]}x ${esc(p.name)}</span><b>${brl(p.price*cart[p.id])}</b></div>`).join('')}
+ <label>Seu nome<input value="${esc(F.name)}" oninput="setF('name',this.value);document.getElementById('go').disabled=!this.value.trim()"></label>
+ <label>Retirada ou entrega<select onchange="setF('mode',this.value)"><option ${F.mode=='Retirada'?'selected':''}>Retirada</option><option ${F.mode=='Entrega'?'selected':''}>Entrega</option></select></label>
+ <label>Data desejada<input type="date" value="${esc(F.date)}" oninput="setF('date',this.value)"></label>
+ <label>Observações (recado no bolo, endereço)<textarea rows="2" oninput="setF('obs',this.value)">${esc(F.obs)}</textarea></label>
+ <p style="margin:16px 0 10px"><b>Total: ${brl(total)}</b></p><button id="go" class="btn" ${F.name.trim()?'':'disabled'} onclick="send()">Enviar pedido no WhatsApp</button></div></div>`:''}</main>`}
+function send(){
+ const items=P.filter(p=>cart[p.id]),total=items.reduce((a,p)=>a+p.price*cart[p.id],0)
+ const m=[`*Novo pedido — ${S.name}*`,'',...items.map(p=>`${cart[p.id]}x ${p.name} — ${brl(p.price*cart[p.id])}`),'',`*Total: ${brl(total)}*`,`Cliente: ${F.name}`,
+  F.mode+(F.date?' em '+F.date.split('-').reverse().join('/'):''),F.obs?'Obs: '+F.obs:null].filter(x=>x!==null).join('\n')
+ window.open('https://wa.me/'+S.whatsapp.replace(/\D/g,'')+'?text='+encodeURIComponent(m),'_blank')}
+
+/* ===== PAINEL DA LOJA ===== */
+let user=null,rec=false,lic=false,store=null,prods=[],tab='produtos',ed=null
+async function painel(){
+ if(/type=(invite|recovery)/.test(location.hash))rec=true
+ sb.auth.onAuthStateChange((e,s)=>{const u=s?.user||null;if(e==='PASSWORD_RECOVERY')rec=true;if(u?.id!==user?.id||e==='PASSWORD_RECOVERY'){user=u;pRoute()}})
+ const {data}=await sb.auth.getSession();user=data.session?.user||null;pRoute()}
+function pRoute(){document.body.style.setProperty('--brand','#c2185b');if(!user)loginView();else if(rec)passView();else load()}
+function loginView(){$.innerHTML=`<main class="wrap pad"><h1>Painel da loja</h1><form onsubmit="login(event)">
+ <label>E-mail<input id="em" type="email" name="email" required></label><label>Senha<input type="password" name="pw"></label>
+ <div class="row" style="margin-top:18px"><button class="btn">Entrar</button><button type="button" class="btn ghost" onclick="reset()">Primeiro acesso ou esqueci a senha</button></div></form><p class="msg" id="msg"></p></main>`}
+async function login(e){e.preventDefault();const d=new FormData(e.target);const {error}=await sb.auth.signInWithPassword({email:d.get('email'),password:d.get('pw')});if(error)msg('E-mail ou senha incorretos.')}
+async function reset(){const em=document.getElementById('em').value;if(!em)return msg('Digite seu e-mail acima.');await sb.auth.resetPasswordForEmail(em,{redirectTo:location.origin+'/painel'});msg('Enviamos um link para criar ou trocar a senha. Confira seu e-mail.')}
+function passView(){$.innerHTML=`<main class="wrap pad"><h1>Crie sua senha</h1><form onsubmit="newPass(event)"><label>Nova senha (mínimo 6 caracteres)<input type="password" name="pw" minlength="6" required></label><button class="btn" style="margin-top:18px">Salvar senha</button></form><p class="msg" id="msg"></p></main>`}
+async function newPass(e){e.preventDefault();const {error}=await sb.auth.updateUser({password:new FormData(e.target).get('pw')});if(error)msg(error.message);else{rec=false;history.replaceState(null,'',location.pathname);pRoute()}}
+async function load(){
+ const {data:l}=await sb.from('licenses').select('active').eq('email',user.email).maybeSingle();lic=!!l?.active
+ const {data:s}=await sb.from('stores').select('*').eq('owner',user.id).maybeSingle();store=s
+ if(s){const {data:p}=await sb.from('products').select('*').eq('store_id',s.id).order('category').order('name');prods=p||[]}
+ adminView()}
+const out='<button class="btn ghost sm" onclick="sb.auth.signOut()">Sair</button>'
+function adminView(){
+ if(!lic){$.innerHTML=`<main class="wrap pad"><h1>Assinatura inativa</h1><p style="margin:12px 0 20px">Não encontramos uma assinatura ativa para ${esc(user.email)}. Se acabou de comprar, aguarde alguns minutos e recarregue.</p>${out}</main>`;return}
+ if(!store){$.innerHTML=`<main class="wrap pad"><h1>Configure sua confeitaria</h1>${storeForm()}</main>`;return}
+ document.body.style.setProperty('--brand',store.color)
+ const T=[['produtos','Produtos'],['loja','Dados da loja'],['link','Link e QR Code']]
+ $.innerHTML=`<main class="wrap" style="padding:24px 16px 64px"><div class="row sp"><h1 style="font-size:28px">${esc(store.name)}</h1>${out}</div>
+ <div class="tabs">${T.map(([k,n])=>`<button class="${tab==k?'on':''}" onclick="tab='${k}';ed=null;adminView()">${n}</button>`).join('')}</div>
+ ${tab=='produtos'?prodView():tab=='loja'?storeForm():linkView()}</main>`}
+function storeForm(){const s=store||{color:CORES[0][0]},v=k=>esc(s[k]||'')
+ return `<form class="card" onsubmit="saveStore(event)"><label>Nome da confeitaria<input name="name" value="${v('name')}" required></label>
+ ${store?'':'<label>Endereço do cardápio (ex.: doce-sonho)<input name="slug"></label>'}
+ <label>Frase curta<input name="tagline" value="${v('tagline')}" placeholder="Bolos artesanais feitos com carinho"></label>
+ <label>WhatsApp que recebe os pedidos (com DDD)<input name="whatsapp" value="${v('whatsapp')}" inputmode="tel" required></label>
+ <label>Endereço da loja<input name="address" value="${v('address')}"></label>
+ <label>Horário de atendimento<input name="hours" value="${v('hours')}" placeholder="Seg a sáb, 9h às 18h"></label>
+ <label>Prazo de encomenda<input name="lead_time" value="${v('lead_time')}" placeholder="Encomendas com 48h de antecedência"></label>
+ <label>Sobre a loja<textarea name="about" rows="3">${v('about')}</textarea></label>
+ <label>Cor do cardápio</label><div class="sw">${CORES.map(([c,n])=>`<label><input type="radio" name="color" value="${c}" ${s.color===c?'checked':''}><span class="dot" style="background:${c}"></span>${n}</label>`).join('')}</div>
+ <button class="btn" style="margin-top:18px">Salvar</button><p class="msg" id="msg"></p></form>`}
+async function saveStore(e){e.preventDefault();const d=Object.fromEntries(new FormData(e.target));msg('Salvando…')
+ const row={name:d.name,tagline:d.tagline,about:d.about,address:d.address,hours:d.hours,lead_time:d.lead_time,color:d.color||CORES[0][0],whatsapp:wa(d.whatsapp)}
+ const r=store?await sb.from('stores').update(row).eq('id',store.id):await sb.from('stores').insert({...row,slug:slugify(d.slug||d.name),owner:user.id,owner_email:user.email})
+ if(r.error)return msg(r.error.code==='23505'?'Esse endereço já está em uso. Escolha outro.':'Não foi possível salvar: '+r.error.message)
+ await load();msg('Salvo!')}
+function prodView(){
+ if(ed){const p=ed;return `<form class="card" onsubmit="saveProd(event)"><h2 style="font-size:22px">${p.id?'Editar produto':'Novo produto'}</h2>
+ <label>Nome<input name="name" value="${esc(p.name)}" required></label>
+ <label>Categoria<input name="category" list="cats" value="${esc(p.category)}"></label><datalist id="cats">${CATS.map(c=>`<option value="${c}">`).join('')}</datalist>
+ <label>Descrição<textarea name="description" rows="2">${esc(p.description)}</textarea></label>
+ <label>Preço (R$)<input name="price" inputmode="decimal" value="${esc(p.price)}" required></label>
+ <label>Foto<input type="file" accept="image/*" onchange="upImg(this)"></label><input type="hidden" name="image_url" id="img" value="${esc(p.image_url)}">
+ <img id="prev" alt="" style="width:96px;height:96px;object-fit:cover;border-radius:18px;margin-top:8px;${p.image_url?'':'display:none'}" src="${esc(p.image_url)}">
+ <div class="row" style="margin-top:18px"><button class="btn" id="sv">Salvar produto</button><button type="button" class="btn ghost" onclick="ed=null;adminView()">Cancelar</button></div><p class="msg" id="msg"></p></form>`}
+ return `<button class="btn" onclick="ed={name:'',category:'Bolos',description:'',price:'',image_url:'',available:true};adminView()">Adicionar produto</button>
+ ${prods.length?'':'<p class="msg">Nenhum produto ainda. Adicione o primeiro para aparecer no cardápio.</p>'}
+ ${prods.map(p=>`<div class="card row">${p.image_url?`<img src="${esc(p.image_url)}" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:14px">`:'<div class="ph" style="width:64px;height:64px"></div>'}
+ <div style="flex:1;min-width:120px"><b>${esc(p.name)}</b><br>${esc(p.category)} · ${brl(p.price)}${p.available?'':' · Esgotado'}</div>
+ <button class="btn ghost sm" onclick="ed=prods.find(x=>x.id=='${p.id}');adminView()">Editar</button>
+ <button class="btn ghost sm" onclick="tog('${p.id}')">${p.available?'Marcar esgotado':'Marcar disponível'}</button>
+ <button class="btn ghost sm" onclick="del('${p.id}')">Excluir</button></div>`).join('')}`}
+async function shrink(f){const b=await createImageBitmap(f),k=Math.min(1,900/Math.max(b.width,b.height)),c=document.createElement('canvas');c.width=Math.round(b.width*k);c.height=Math.round(b.height*k);c.getContext('2d').drawImage(b,0,0,c.width,c.height);return new Promise(r=>c.toBlob(r,'image/jpeg',.8))}
+async function upImg(i){const f=i.files[0];if(!f)return;document.getElementById('sv').disabled=true;msg('Enviando foto…')
+ const blob=await shrink(f).catch(()=>f),path=user.id+'/'+Date.now()+'.jpg',{error}=await sb.storage.from('menu').upload(path,blob,{contentType:blob.type||f.type})
+ if(!error){const u=sb.storage.from('menu').getPublicUrl(path).data.publicUrl;document.getElementById('img').value=u;const pv=document.getElementById('prev');pv.src=u;pv.style.display='block';msg('')}else msg('Falha ao enviar a foto.')
+ document.getElementById('sv').disabled=false}
+async function saveProd(e){e.preventDefault();const d=Object.fromEntries(new FormData(e.target))
+ const row={name:d.name,category:d.category,description:d.description,image_url:d.image_url,available:ed.available,price:Number(String(d.price).replace(',','.'))||0}
+ if(ed.id)await sb.from('products').update(row).eq('id',ed.id);else await sb.from('products').insert({...row,store_id:store.id})
+ ed=null;load()}
+async function tog(id){const p=prods.find(x=>x.id==id);await sb.from('products').update({available:!p.available}).eq('id',id);load()}
+async function del(id){const p=prods.find(x=>x.id==id);if(confirm('Excluir "'+p.name+'"?')){await sb.from('products').delete().eq('id',id);load()}}
+function qrPng(url,color){const q=qrcode(0,'M');q.addData(url);q.make();const n=q.getModuleCount(),s=12,m=3,c=document.createElement('canvas');c.width=c.height=(n+2*m)*s
+ const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.fillStyle=color;for(let r=0;r<n;r++)for(let k=0;k<n;k++)if(q.isDark(r,k))x.fillRect((k+m)*s,(r+m)*s,s,s);return c.toDataURL('image/png')}
+function linkView(){const url=location.origin+'/'+store.slug,png=qrPng(url,store.color)
+ return `<div class="card"><p>Link do seu cardápio:</p><p><a href="${esc(url)}"><b>${esc(url)}</b></a></p>
+ <div class="row" style="margin-top:12px"><button class="btn sm" onclick="navigator.clipboard.writeText('${esc(url)}').then(()=>this.textContent='Link copiado')">Copiar link</button><a class="btn ghost sm" href="${esc(url)}" target="_blank">Ver cardápio</a></div>
+ <img src="${png}" alt="QR Code do cardápio" style="width:240px;display:block;margin:20px 0 12px"><a class="btn" href="${png}" download="qrcode-${esc(store.slug)}.png">Baixar QR Code</a></div>`}
+</script></body></html>
