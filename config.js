@@ -1,4 +1,4 @@
 const CFG={
  url:'https://ortlaktjdonvcwcypyco.supabase.co',
- key:'COLE_AQUI_A_CHAVE_ANON'
+ key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ydGxha3RqZG9udmN3Y3lweWNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwMDYyMTQsImV4cCI6MjEwNzU4MjIxNH0.zeAAmsBWy1no1kkasRfkKutX76gP5om-eLffMzb8l1M'
 }
