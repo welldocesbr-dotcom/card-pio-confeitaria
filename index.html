@@ -1,0 +1,205 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Cardápio digital para confeitarias</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2a1d1a;--mut:#7a6a66;--bg:#fbf7f4;--card:#fff;--line:#eee3df;--calda:#f6e3e7;--brand:#c2185b;--display:Fraunces,Georgia,serif;--sh:0 1px 2px #2a1d1a0d,0 8px 24px #2a1d1a14}
+*{box-sizing:border-box;margin:0}html{scroll-behavior:smooth}
+body{font:16px/1.55 Figtree,system-ui,sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.15;letter-spacing:-.01em}
+a{color:inherit}button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--brand) 55%,transparent);outline-offset:2px}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}.pad{padding:44px 16px}.mut{color:var(--mut);font-size:14px}
+.ic{width:20px;height:20px;flex:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--brand);color:#fff;border:0;border-radius:14px;padding:13px 22px;font-weight:700;cursor:pointer;text-decoration:none;transition:transform .1s,filter .15s}
+.btn:active{transform:scale(.98)}.btn:hover{filter:brightness(1.06)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--brand);border:1.5px solid color-mix(in srgb,var(--brand) 35%,transparent)}
+.btn.sm{padding:8px 14px;font-size:14px;border-radius:12px}.btn.wa{background:#1fa855}.btn.block{width:100%;padding:16px;font-size:17px}
+input,select,textarea{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;background:#fff;margin-top:6px}
+input:focus,select:focus,textarea:focus{border-color:var(--brand);outline:0;box-shadow:0 0 0 4px color-mix(in srgb,var(--brand) 18%,transparent)}
+label{display:block;font-size:13px;font-weight:700;margin-top:16px;color:#4a3a36}
+.card{background:var(--card);border-radius:22px;padding:18px;margin-top:14px;box-shadow:var(--sh)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.sp{justify-content:space-between}
+.hero{position:relative;overflow:hidden;color:#fff;padding:38px 0 84px;background:linear-gradient(160deg,var(--brand),color-mix(in srgb,var(--brand) 55%,#000))}
+.hero::after{content:"";position:absolute;right:-70px;top:-70px;width:240px;height:240px;border-radius:50%;background:#ffffff14}
+.hero .wrap{position:relative;z-index:1}.hero h1{font-size:34px;margin-top:16px}.hero .tag{opacity:.92;margin-top:4px}
+.logo{width:72px;height:72px;border-radius:22px;background:#fff;color:var(--brand);display:grid;place-items:center;font:700 30px var(--display);box-shadow:var(--sh)}.logo.sm{width:44px;height:44px;border-radius:14px;font-size:20px;background:var(--brand);color:#fff}
+.info{position:relative;margin-top:-56px;background:var(--card);border-radius:22px;box-shadow:var(--sh);padding:4px 18px}
+.info .i{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);font-size:15px;align-items:flex-start}.info .i:last-child{border:0}
+.info .i .ic{color:var(--brand);margin-top:2px}.info b{display:block;font-size:11px;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.about{margin:16px 4px 0;color:#4a3a36;font-size:15px}
+.chips{position:sticky;top:0;z-index:5;background:#fbf7f4ee;backdrop-filter:blur(10px);padding:14px 0 10px;margin-top:10px}
+.chips div{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:0 16px;max-width:640px;margin:0 auto}
+.chips a{flex:none;padding:9px 17px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-weight:600;font-size:14px;text-decoration:none}
+.chips a.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.menu{padding-bottom:120px}.sec{scroll-margin-top:60px}.sec h2{font-size:24px;margin:24px 0 12px}
+.p{display:flex;gap:14px;background:var(--card);border-radius:22px;padding:14px;margin-bottom:12px;box-shadow:var(--sh)}
+.p .t{flex:1;min-width:0;display:flex;flex-direction:column}.p h3{font:700 17px Figtree,sans-serif}
+.p .d{font-size:14px;color:var(--mut);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:3px 0 10px}
+.p .pr{margin-top:auto;font-weight:800;font-size:18px}.p.sold{opacity:.55}.p.sold .pic img{filter:grayscale(1)}
+.pic{position:relative;flex:none;width:112px;height:112px}.pic img,.ph{width:100%;height:100%;object-fit:cover;border-radius:18px;background:var(--calda);display:block}
+.add,.stp{position:absolute;right:-6px;bottom:-6px;border:3px solid var(--card);background:var(--brand);color:#fff;box-shadow:0 4px 12px #0003}
+.add{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;cursor:pointer}
+.stp{display:flex;align-items:center;border-radius:999px;font-weight:700}.stp button{width:36px;height:36px;background:none;border:0;color:#fff;display:grid;place-items:center;cursor:pointer}.stp span{min-width:16px;text-align:center}
+.bar{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:608px;margin:0 auto;background:var(--brand);color:#fff;border:0;border-radius:20px;padding:14px 18px;display:flex;align-items:center;gap:12px;font-weight:700;box-shadow:0 12px 32px #0000004d;cursor:pointer;z-index:6}
+.bar .n{background:#fff;color:var(--brand);min-width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:14px}.bar .l{flex:1;text-align:left}
+.sheet{position:fixed;inset:0;background:#2a1d1a80;display:flex;align-items:flex-end;z-index:9}
+.sheet>div{background:var(--bg);width:100%;max-width:640px;margin:0 auto;border-radius:28px 28px 0 0;padding:12px 18px calc(22px + env(safe-area-inset-bottom,0px));max-height:92vh;overflow:auto}
+.grab{width:44px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 14px}
+.li{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.li .stp{position:static;box-shadow:none;border:0}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:#efe6e2;border-radius:14px;padding:4px;margin-top:6px}
+.seg button{border:0;background:none;padding:11px;border-radius:11px;font-weight:700;cursor:pointer;color:var(--mut)}.seg button.on{background:#fff;color:var(--ink);box-shadow:var(--sh)}
+.tot{display:flex;justify-content:space-between;align-items:baseline;margin:18px 0 14px;font-size:18px}.tot b{font:700 26px var(--display)}
+.empty{margin-top:32px;text-align:center;color:var(--mut)}.foot{text-align:center;padding:30px 0;font-size:13px;color:var(--mut)}
+.tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:18px 0 4px}
+.tabs button{flex:none;border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 18px;font-weight:700;cursor:pointer}.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.sw{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}.sw label{margin:0;display:flex;align-items:center;gap:6px;font-weight:600}.sw input{width:auto;margin:0}
+.dot{width:18px;height:18px;border-radius:50%;display:inline-block}.msg{margin-top:10px;font-weight:600}
+</style></head><body><div id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script src="/config.js"></script>
+<script src="/precificacao.js"></script>
+<script>
+const sb=supabase.createClient(CFG.url,CFG.key),$=document.getElementById('app')
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+const brl=v=>Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})
+const CORES=[['#c2185b','Framboesa'],['#6d4c41','Chocolate'],['#2e7d6b','Pistache'],['#7b3fa0','Uva'],['#d9480f','Laranja'],['#0f6e8c','Azul']]
+const CATS=['Bolos','Tortas','Doces','Brigadeiros','Cupcakes','Salgados','Bebidas']
+const slugify=t=>t.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)
+const wa=v=>{const d=String(v).replace(/\D/g,'');return d.length<=11?'55'+d:d}
+const msg=t=>{const m=document.getElementById('msg');if(m)m.textContent=t}
+const path=location.pathname.replace(/^\/|\/$/g,'')
+if(path===''){$.innerHTML=`<header class="hero" style="padding-bottom:64px"><div class="wrap"><div class="logo">🍰</div><h1 style="font-size:40px">Seu cardápio de confeitaria em um link</h1><p class="tag" style="font-size:18px;margin-top:10px">Bolos, doces e tortas com foto e preço. Os pedidos chegam prontos no seu WhatsApp.</p><a class="btn" style="background:#fff;color:var(--brand);margin-top:22px" href="/painel">Entrar no painel</a></div></header><main class="wrap" style="padding-bottom:48px">${[['📱','Link e QR Code','Compartilhe no Instagram e no WhatsApp ou imprima.'],['🧾','Pedidos organizados','Itens, total, data e recado no bolo em uma mensagem.'],['🧮','Precificação','Custo, rendimento e lucro de cada receita.']].map(x=>`<div class="card row" style="flex-wrap:nowrap"><span style="font-size:30px">${x[0]}</span><div><h3 style="font-size:19px">${x[1]}</h3><p class="mut">${x[2]}</p></div></div>`).join('')}</main>`}
+else if(path==='painel')painel();else menu(path)
+
+/* ===== CARDÁPIO PÚBLICO ===== */
+let S,P=[],cart={},F={name:'',date:'',mode:'Retirada',obs:''},open=false
+async function menu(slug){
+ const {data:s}=await sb.from('stores').select('id,name,tagline,about,address,hours,lead_time,whatsapp,color').eq('slug',slug).maybeSingle()
+ if(!s){$.innerHTML='<main class="wrap pad"><h1>Cardápio não encontrado</h1></main>';return}
+ S=s;document.title=s.name
+ const {data:p}=await sb.from('products').select('*').eq('store_id',s.id).order('category').order('name');P=p||[];drawMenu()}
+const add=(id,d)=>{const n=(cart[id]||0)+d;if(n>0)cart[id]=n;else delete cart[id];drawMenu()}
+const toggleSheet=v=>{open=v;drawMenu()}
+const setF=(k,v)=>F[k]=v
+const setMode=m=>{F.mode=m;drawMenu()}
+const IC={pin:'<path d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',cal:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',plus:'<path d="M12 5v14M5 12h14"/>',minus:'<path d="M5 12h14"/>',bag:'<path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8a3 3 0 016 0"/>'}
+const ic=n=>`<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`
+const stepper=p=>`<div class="stp"><button aria-label="Remover um" onclick="add('${p.id}',-1)">${ic('minus')}</button><span>${cart[p.id]}</span><button aria-label="Adicionar um" onclick="add('${p.id}',1)">${ic('plus')}</button></div>`
+const card=p=>{const img=p.image_url?`<img src="${esc(p.image_url)}" alt="${esc(p.name)}" loading="lazy">`:'<div class="ph"></div>'
+ const ctl=!p.available?'':cart[p.id]?stepper(p):`<button class="add" aria-label="Adicionar ${esc(p.name)}" onclick="add('${p.id}',1)">${ic('plus')}</button>`
+ return `<article class="p ${p.available?'':'sold'}"><div class="t"><h3>${esc(p.name)}</h3>${p.description?`<p class="d">${esc(p.description)}</p>`:''}<span class="pr">${p.available?brl(p.price):'Esgotado'}</span></div><div class="pic">${img}${ctl}</div></article>`}
+addEventListener('scroll',()=>{const a=[...document.querySelectorAll('.chips a')];if(!a.length)return;let k=0;document.querySelectorAll('.sec').forEach((e,i)=>{if(e.getBoundingClientRect().top<130)k=i});a.forEach((x,i)=>x.classList.toggle('on',i==k))},{passive:true})
+function drawMenu(){
+ const items=P.filter(p=>cart[p.id]),total=items.reduce((a,p)=>a+p.price*cart[p.id],0),count=Object.values(cart).reduce((a,b)=>a+b,0)
+ const cats=[...new Set(P.map(p=>p.category||'Cardápio'))],ini=esc((S.name||'?').trim().charAt(0).toUpperCase())
+ const row=(i,t,v)=>`<div class="i">${ic(i)}<div><b>${t}</b>${v}</div></div>`
+ const info=[S.address?row('pin','Endereço',`<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(S.address)}" target="_blank" rel="noopener">${esc(S.address)}</a>`):'',S.hours?row('clock','Horário',esc(S.hours)):'',S.lead_time?row('cal','Encomendas',esc(S.lead_time)):''].join('')
+ $.innerHTML=`<main class="menu" style="--brand:${esc(S.color||'#c2185b')}"><header class="hero"><div class="wrap"><div class="logo">${ini}</div><h1>${esc(S.name)}</h1>${S.tagline?`<p class="tag">${esc(S.tagline)}</p>`:''}</div></header>
+ <div class="wrap">${info?`<div class="info">${info}</div>`:''}${S.about?`<p class="about">${esc(S.about)}</p>`:''}</div>
+ ${cats.length?`<nav class="chips"><div>${cats.map((c,i)=>`<a href="#c${i}" class="${i?'':'on'}">${esc(c)}</a>`).join('')}</div></nav>`:''}
+ <div class="wrap">${P.length?'':'<p class="empty">O cardápio ainda está vazio.</p>'}
+ ${cats.map((c,i)=>`<section class="sec" id="c${i}"><h2>${esc(c)}</h2>${P.filter(p=>(p.category||'Cardápio')===c).map(card).join('')}</section>`).join('')}
+ <p class="foot">Cardápio digital · <a href="/painel">Painel da loja</a></p></div>
+ ${count?`<button class="bar" onclick="toggleSheet(true)">${ic('bag')}<span class="l">Ver sacola</span><span class="n">${count}</span><span>${brl(total)}</span></button>`:''}
+ ${open?`<div class="sheet" onclick="toggleSheet(false)"><div onclick="event.stopPropagation()"><div class="grab"></div>
+ <div class="row sp"><h2 style="font-size:24px">Sua sacola</h2><button class="btn ghost sm" onclick="toggleSheet(false)">Fechar</button></div>
+ ${items.map(p=>`<div class="li"><div style="flex:1"><b>${esc(p.name)}</b><br><span class="mut">${brl(p.price)}</span></div>${stepper(p)}<b style="min-width:64px;text-align:right">${brl(p.price*cart[p.id])}</b></div>`).join('')}
+ <label>Seu nome<input value="${esc(F.name)}" autocomplete="name" oninput="setF('name',this.value);document.getElementById('go').disabled=!this.value.trim()"></label>
+ <label>Como prefere receber?</label><div class="seg"><button class="${F.mode=='Retirada'?'on':''}" onclick="setMode('Retirada')">Retirada</button><button class="${F.mode=='Entrega'?'on':''}" onclick="setMode('Entrega')">Entrega</button></div>
+ <label>Data desejada<input type="date" min="${new Date().toISOString().slice(0,10)}" value="${esc(F.date)}" oninput="setF('date',this.value)"></label>
+ <label>Observações (recado no bolo, endereço de entrega)<textarea rows="2" oninput="setF('obs',this.value)">${esc(F.obs)}</textarea></label>
+ <div class="tot"><span>Total</span><b>${brl(total)}</b></div>
+ <button id="go" class="btn wa block" ${F.name.trim()?'':'disabled'} onclick="send()">Enviar pedido pelo WhatsApp</button></div></div>`:''}</main>`}
+function send(){
+ const items=P.filter(p=>cart[p.id]),total=items.reduce((a,p)=>a+p.price*cart[p.id],0)
+ const m=[`*Novo pedido — ${S.name}*`,'',...items.map(p=>`${cart[p.id]}x ${p.name} — ${brl(p.price*cart[p.id])}`),'',`*Total: ${brl(total)}*`,'',`Cliente: ${F.name}`,
+  F.mode+(F.date?' em '+F.date.split('-').reverse().join('/'):''),F.obs?'Obs: '+F.obs:null].filter(x=>x!==null).join('\n')
+ window.open('https://wa.me/'+S.whatsapp.replace(/\D/g,'')+'?text='+encodeURIComponent(m),'_blank')}
+
+/* ===== PAINEL DA LOJA ===== */
+let user=null,rec=false,lic=false,store=null,prods=[],tab='produtos',ed=null
+async function painel(){
+ if(/type=(invite|recovery)/.test(location.hash))rec=true
+ sb.auth.onAuthStateChange((e,s)=>{const u=s?.user||null;if(e==='PASSWORD_RECOVERY')rec=true;if(u?.id!==user?.id||e==='PASSWORD_RECOVERY'){user=u;pRoute()}})
+ const {data}=await sb.auth.getSession();user=data.session?.user||null;pRoute()}
+function pRoute(){document.body.style.setProperty('--brand','#c2185b');if(!user)loginView();else if(rec)passView();else load()}
+function loginView(){$.innerHTML=`<main class="wrap pad"><div class="logo" style="background:var(--brand);color:#fff">🍰</div><h1 style="margin:16px 0 4px">Painel da loja</h1><p class="mut">Entre para gerenciar seu cardápio.</p><form class="card" onsubmit="login(event)">
+ <label>E-mail<input id="em" type="email" name="email" required></label><label>Senha<input type="password" name="pw"></label>
+ <div class="row" style="margin-top:18px"><button class="btn">Entrar</button><button type="button" class="btn ghost" onclick="reset()">Primeiro acesso ou esqueci a senha</button></div></form><p class="msg" id="msg"></p></main>`}
+async function login(e){e.preventDefault();const d=new FormData(e.target);const {error}=await sb.auth.signInWithPassword({email:d.get('email'),password:d.get('pw')});if(error)msg('E-mail ou senha incorretos.')}
+async function reset(){const em=document.getElementById('em').value;if(!em)return msg('Digite seu e-mail acima.');await sb.auth.resetPasswordForEmail(em,{redirectTo:location.origin+'/painel'});msg('Enviamos um link para criar ou trocar a senha. Confira seu e-mail.')}
+function passView(){$.innerHTML=`<main class="wrap pad"><h1>Crie sua senha</h1><form class="card" onsubmit="newPass(event)"><label>Nova senha (mínimo 6 caracteres)<input type="password" name="pw" minlength="6" required></label><button class="btn" style="margin-top:18px">Salvar senha</button></form><p class="msg" id="msg"></p></main>`}
+async function newPass(e){e.preventDefault();const {error}=await sb.auth.updateUser({password:new FormData(e.target).get('pw')});if(error)msg(error.message);else{rec=false;history.replaceState(null,'',location.pathname);pRoute()}}
+const PREC={
+ async list(){const {data,error}=await sb.from('recipes').select('id,name,data').eq('store_id',store.id).order('created_at',{ascending:false});if(error)throw error;return data||[]},
+ async save(name,data,id){const r=id?await sb.from('recipes').update({name,data}).eq('id',id):await sb.from('recipes').insert({name,data,store_id:store.id});if(r.error)throw r.error},
+ async del(id){const r=await sb.from('recipes').delete().eq('id',id);if(r.error)throw r.error},
+ async listSup(){const {data,error}=await sb.from('supplies').select('*').eq('store_id',store.id).order('name');if(error)throw error;return data||[]},
+ async saveSup(row,id){const r=id?await sb.from('supplies').update(row).eq('id',id):await sb.from('supplies').insert({...row,store_id:store.id});if(r.error)throw r.error},
+ async delSup(id){const r=await sb.from('supplies').delete().eq('id',id);if(r.error)throw r.error},
+ use(name,price){ed={name,category:'Bolos',description:'',price:price.toFixed(2).replace('.',','),image_url:'',available:true};tab='produtos';adminView()}}
+async function load(){
+ const {data:l}=await sb.from('licenses').select('active').eq('email',user.email).maybeSingle();lic=!!l?.active
+ const {data:s}=await sb.from('stores').select('*').eq('owner',user.id).maybeSingle();store=s
+ if(s){const {data:p}=await sb.from('products').select('*').eq('store_id',s.id).order('category').order('name');prods=p||[]}
+ adminView()}
+const out='<button class="btn ghost sm" onclick="sb.auth.signOut()">Sair</button>'
+function adminView(){
+ if(!lic){$.innerHTML=`<main class="wrap pad"><h1>Assinatura inativa</h1><p style="margin:12px 0 20px">Não encontramos uma assinatura ativa para ${esc(user.email)}. Se acabou de comprar, aguarde alguns minutos e recarregue.</p>${out}</main>`;return}
+ if(!store){$.innerHTML=`<main class="wrap pad"><h1>Configure sua confeitaria</h1>${storeForm()}</main>`;return}
+ document.body.style.setProperty('--brand',store.color)
+ const T=[['produtos','Produtos'],['loja','Dados da loja'],['link','Link e QR Code'],['preco','Precificação']]
+ $.innerHTML=`<main class="wrap" style="padding:24px 16px 64px"><div class="row sp"><div class="row" style="flex-wrap:nowrap"><div class="logo sm">${esc(store.name.trim().charAt(0).toUpperCase())}</div><div><h1 style="font-size:22px">${esc(store.name)}</h1><a class="mut" href="/${esc(store.slug)}">/${esc(store.slug)}</a></div></div>${out}</div>
+ <div class="tabs">${T.map(([k,n])=>`<button class="${tab==k?'on':''}" onclick="tab='${k}';ed=null;adminView()">${n}</button>`).join('')}</div>
+ ${tab=='produtos'?prodView():tab=='loja'?storeForm():tab=='preco'?'<div id="prec"></div>':linkView()}</main>`;if(tab=='preco')precInit()}
+function storeForm(){const s=store||{color:CORES[0][0]},v=k=>esc(s[k]||'')
+ return `<form class="card" onsubmit="saveStore(event)"><label>Nome da confeitaria<input name="name" value="${v('name')}" required></label>
+ ${store?'':'<label>Endereço do cardápio (ex.: doce-sonho)<input name="slug"></label>'}
+ <label>Frase curta<input name="tagline" value="${v('tagline')}" placeholder="Bolos artesanais feitos com carinho"></label>
+ <label>WhatsApp que recebe os pedidos (com DDD)<input name="whatsapp" value="${v('whatsapp')}" inputmode="tel" required></label>
+ <label>Endereço da loja<input name="address" value="${v('address')}"></label>
+ <label>Horário de atendimento<input name="hours" value="${v('hours')}" placeholder="Seg a sáb, 9h às 18h"></label>
+ <label>Prazo de encomenda<input name="lead_time" value="${v('lead_time')}" placeholder="Encomendas com 48h de antecedência"></label>
+ <label>Sobre a loja<textarea name="about" rows="3">${v('about')}</textarea></label>
+ <label>Cor do cardápio</label><div class="sw">${CORES.map(([c,n])=>`<label><input type="radio" name="color" value="${c}" ${s.color===c?'checked':''}><span class="dot" style="background:${c}"></span>${n}</label>`).join('')}</div>
+ <button class="btn" style="margin-top:18px">Salvar</button><p class="msg" id="msg"></p></form>`}
+async function saveStore(e){e.preventDefault();const d=Object.fromEntries(new FormData(e.target));msg('Salvando…')
+ const row={name:d.name,tagline:d.tagline,about:d.about,address:d.address,hours:d.hours,lead_time:d.lead_time,color:d.color||CORES[0][0],whatsapp:wa(d.whatsapp)}
+ const r=store?await sb.from('stores').update(row).eq('id',store.id):await sb.from('stores').insert({...row,slug:slugify(d.slug||d.name),owner:user.id,owner_email:user.email})
+ if(r.error)return msg(r.error.code==='23505'?'Esse endereço já está em uso. Escolha outro.':'Não foi possível salvar: '+r.error.message)
+ await load();msg('Salvo!')}
+function prodView(){
+ if(ed){const p=ed;return `<form class="card" onsubmit="saveProd(event)"><h2 style="font-size:22px">${p.id?'Editar produto':'Novo produto'}</h2>
+ <label>Nome<input name="name" value="${esc(p.name)}" required></label>
+ <label>Categoria<input name="category" list="cats" value="${esc(p.category)}"></label><datalist id="cats">${CATS.map(c=>`<option value="${c}">`).join('')}</datalist>
+ <label>Descrição<textarea name="description" rows="2">${esc(p.description)}</textarea></label>
+ <label>Preço (R$)<input name="price" inputmode="decimal" value="${esc(p.price)}" required></label>
+ <label>Foto<input type="file" accept="image/*" onchange="upImg(this)"></label><input type="hidden" name="image_url" id="img" value="${esc(p.image_url)}">
+ <img id="prev" alt="" style="width:96px;height:96px;object-fit:cover;border-radius:18px;margin-top:8px;${p.image_url?'':'display:none'}" src="${esc(p.image_url)}">
+ <div class="row" style="margin-top:18px"><button class="btn" id="sv">Salvar produto</button><button type="button" class="btn ghost" onclick="ed=null;adminView()">Cancelar</button></div><p class="msg" id="msg"></p></form>`}
+ return `<button class="btn" onclick="ed={name:'',category:'Bolos',description:'',price:'',image_url:'',available:true};adminView()">Adicionar produto</button>
+ ${prods.length?'':'<p class="msg">Nenhum produto ainda. Adicione o primeiro para aparecer no cardápio.</p>'}
+ ${prods.map(p=>`<div class="card row">${p.image_url?`<img src="${esc(p.image_url)}" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:14px">`:'<div class="ph" style="width:64px;height:64px"></div>'}
+ <div style="flex:1;min-width:120px"><b>${esc(p.name)}</b><br>${esc(p.category)} · ${brl(p.price)}${p.available?'':' · Esgotado'}</div>
+ <button class="btn ghost sm" onclick="ed=prods.find(x=>x.id=='${p.id}');adminView()">Editar</button>
+ <button class="btn ghost sm" onclick="tog('${p.id}')">${p.available?'Marcar esgotado':'Marcar disponível'}</button>
+ <button class="btn ghost sm" onclick="del('${p.id}')">Excluir</button></div>`).join('')}`}
+async function shrink(f){const b=await createImageBitmap(f),k=Math.min(1,900/Math.max(b.width,b.height)),c=document.createElement('canvas');c.width=Math.round(b.width*k);c.height=Math.round(b.height*k);c.getContext('2d').drawImage(b,0,0,c.width,c.height);return new Promise(r=>c.toBlob(r,'image/jpeg',.8))}
+async function upImg(i){const f=i.files[0];if(!f)return;document.getElementById('sv').disabled=true;msg('Enviando foto…')
+ const blob=await shrink(f).catch(()=>f),path=user.id+'/'+Date.now()+'.jpg',{error}=await sb.storage.from('menu').upload(path,blob,{contentType:blob.type||f.type})
+ if(!error){const u=sb.storage.from('menu').getPublicUrl(path).data.publicUrl;document.getElementById('img').value=u;const pv=document.getElementById('prev');pv.src=u;pv.style.display='block';msg('')}else msg('Falha ao enviar a foto.')
+ document.getElementById('sv').disabled=false}
+async function saveProd(e){e.preventDefault();const d=Object.fromEntries(new FormData(e.target))
+ const row={name:d.name,category:d.category,description:d.description,image_url:d.image_url,available:ed.available,price:Number(String(d.price).replace(',','.'))||0}
+ if(ed.id)await sb.from('products').update(row).eq('id',ed.id);else await sb.from('products').insert({...row,store_id:store.id})
+ ed=null;load()}
+async function tog(id){const p=prods.find(x=>x.id==id);await sb.from('products').update({available:!p.available}).eq('id',id);load()}
+async function del(id){const p=prods.find(x=>x.id==id);if(confirm('Excluir "'+p.name+'"?')){await sb.from('products').delete().eq('id',id);load()}}
+function qrPng(url,color){const q=qrcode(0,'M');q.addData(url);q.make();const n=q.getModuleCount(),s=12,m=3,c=document.createElement('canvas');c.width=c.height=(n+2*m)*s
+ const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.fillStyle=color;for(let r=0;r<n;r++)for(let k=0;k<n;k++)if(q.isDark(r,k))x.fillRect((k+m)*s,(r+m)*s,s,s);return c.toDataURL('image/png')}
+function linkView(){const url=location.origin+'/'+store.slug,png=qrPng(url,store.color)
+ return `<div class="card"><p>Link do seu cardápio:</p><p><a href="${esc(url)}"><b>${esc(url)}</b></a></p>
+ <div class="row" style="margin-top:12px"><button class="btn sm" onclick="navigator.clipboard.writeText('${esc(url)}').then(()=>this.textContent='Link copiado')">Copiar link</button><a class="btn ghost sm" href="${esc(url)}" target="_blank">Ver cardápio</a></div>
+ <img src="${png}" alt="QR Code do cardápio" style="width:240px;display:block;margin:20px 0 12px"><a class="btn" href="${png}" download="qrcode-${esc(store.slug)}.png">Baixar QR Code</a></div>`}
+</script></body></html>
