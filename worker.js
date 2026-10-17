@@ -31,7 +31,12 @@ function manifest(u){const p=u.searchParams,s=(p.get('s')||'').replace(/[^a-z0-9
 export default{
  async fetch(request,env){
   const u=new URL(request.url),p=u.pathname
-  if(p==='/api/kiwify'&&request.method==='GET')return J({status:'online',versao:3,KIWIFY_TOKEN:!!env.KIWIFY_TOKEN,SUPABASE_URL:!!env.SUPABASE_URL,SUPABASE_SERVICE_ROLE_KEY:!!env.SUPABASE_SERVICE_ROLE_KEY})
+  if(p==='/api/kiwify'&&request.method==='GET'&&u.searchParams.has('testar')){
+   if(!env.SUPABASE_URL||!env.SUPABASE_SERVICE_ROLE_KEY)return J({versao:4,erro:'faltam variáveis na Cloudflare'})
+   const q=async t=>{try{return (await fetch(env.SUPABASE_URL+'/rest/v1/'+t+'?select=*&limit=1',{headers:{apikey:env.SUPABASE_SERVICE_ROLE_KEY,Authorization:'Bearer '+env.SUPABASE_SERVICE_ROLE_KEY}})).status}catch(e){return 'falha de conexão (confira o valor da SUPABASE_URL)'}}
+   const l=await q('licenses'),g=await q('webhook_log')
+   return J({versao:4,tabela_licenses:l,tabela_webhook_log:g,leitura:'200 = ok | 401 = chave errada | 404 = tabela não criada'})}
+  if(p==='/api/kiwify'&&request.method==='GET')return J({status:'online',versao:4,KIWIFY_TOKEN:!!env.KIWIFY_TOKEN,SUPABASE_URL:!!env.SUPABASE_URL,SUPABASE_SERVICE_ROLE_KEY:!!env.SUPABASE_SERVICE_ROLE_KEY})
   if(p==='/api/kiwify'&&request.method==='POST')return kiwify(request,env)
   if(p.startsWith('/api/'))return new Response('not found',{status:404})
   if(p==='/manifest.webmanifest')return new Response(JSON.stringify(manifest(u)),{headers:{'Content-Type':'application/manifest+json','Cache-Control':'no-cache'}})
