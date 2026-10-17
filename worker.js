@@ -13,7 +13,6 @@ async function kiwify(request,env){
  const U=env.SUPABASE_URL,K=env.SUPABASE_SERVICE_ROLE_KEY,active=ON.includes(ev)
  const H={apikey:K,Authorization:'Bearer '+K,'Content-Type':'application/json'}
  await fetch(U+'/rest/v1/licenses?on_conflict=email',{method:'POST',headers:{...H,Prefer:'resolution=merge-duplicates'},body:JSON.stringify({email,active,updated_at:new Date().toISOString()})})
- if(active)await fetch(U+'/auth/v1/invite?redirect_to='+encodeURIComponent(env.SITE_URL+'/painel'),{method:'POST',headers:H,body:JSON.stringify({email})})
  return Response.json({ok:true})
 }
 const SW=`self.addEventListener('install',()=>self.skipWaiting())
