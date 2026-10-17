@@ -161,10 +161,21 @@ async function painel(){
  sb.auth.onAuthStateChange((e,s)=>{const u=s?.user||null;if(e==='PASSWORD_RECOVERY')rec=true;if(u?.id!==user?.id||e==='PASSWORD_RECOVERY'){user=u;pRoute()}})
  const {data}=await sb.auth.getSession();user=data.session?.user||null;pRoute()}
 function pRoute(){document.body.style.setProperty('--brand','#a5603f');if(!user)loginView();else if(rec)passView();else load()}
-function loginView(){$.innerHTML=`<main class="wrap pad"><img class="app" src="/icon-192.png" alt="Descomplica.AI"><h1 style="margin:16px 0 4px">Painel da loja</h1><p class="mut">Entre para gerenciar seu cardápio.</p><form class="card" onsubmit="login(event)">
- <label>E-mail<input id="em" type="email" name="email" required></label><label>Senha<input type="password" name="pw"></label>
- <div class="row" style="margin-top:18px"><button class="btn">Entrar</button><button type="button" class="btn ghost" onclick="esqueci()">Primeiro acesso ou esqueci a senha</button></div></form><p class="msg" id="msg"></p></main>`}
-async function login(e){e.preventDefault();const d=new FormData(e.target);const {error}=await sb.auth.signInWithPassword({email:d.get('email'),password:d.get('pw')});if(error)msg('E-mail ou senha incorretos.')}
+let LM=/criar/.test(location.search)?'up':'in'
+const setLM=m=>{LM=m;loginView()}
+function loginView(){const up=LM=='up'
+ $.innerHTML=`<main class="wrap pad"><img class="app" src="/icon-192.png" alt="Descomplica.AI"><h1 style="margin:16px 0 4px">${up?'Criar minha conta':'Painel da loja'}</h1><p class="mut">${up?'Use o mesmo e-mail da sua compra.':'Entre para gerenciar seu cardápio.'}</p>
+ <div class="seg" style="margin-top:18px"><button class="${up?'':'on'}" onclick="setLM('in')">Entrar</button><button class="${up?'on':''}" onclick="setLM('up')">Criar conta</button></div>
+ <form class="card" onsubmit="${up?'criar':'login'}(event)"><label>E-mail${up?' da compra':''}<input id="em" type="email" name="email" autocomplete="email" required></label>
+ <label>${up?'Crie uma senha (mínimo 6 caracteres)':'Senha'}<input type="password" name="pw" ${up?'minlength="6" autocomplete="new-password"':'autocomplete="current-password"'} required></label>
+ <button class="btn block" style="margin-top:18px">${up?'Criar conta e entrar':'Entrar'}</button></form><p class="msg" id="msg"></p>
+ <p class="mut" style="margin-top:14px">${up?'A conta só é criada para e-mails com compra aprovada.':'Esqueceu a senha? '+(typeof SUPPORT!=='undefined'?`<a href="https://wa.me/${SUPPORT}" target="_blank">Fale com o suporte</a>.`:'Fale com o suporte.')}</p></main>`}
+async function criar(e){e.preventDefault();const d=new FormData(e.target),email=String(d.get('email')).trim().toLowerCase(),pw=String(d.get('pw'))
+ msg('Criando sua conta…')
+ const {data,error}=await sb.auth.signUp({email,password:pw})
+ if(error){const t=error.message||'';return msg(/already|registered/i.test(t)?'Este e-mail já tem conta. Toque em Entrar.':/database|saving|not authorized/i.test(t)?'Não encontramos uma compra aprovada para este e-mail. Use o mesmo e-mail da compra. Se acabou de comprar, aguarde 1 minuto e tente de novo.':'Não foi possível criar a conta agora: '+t)}
+ if(!data.session){const r=await sb.auth.signInWithPassword({email,password:pw});if(r.error)msg('Conta criada! Se pedir confirmação, fale com o suporte.')}}
+async function login(e){e.preventDefault();const d=new FormData(e.target);const {error}=await sb.auth.signInWithPassword({email:String(d.get('email')).trim().toLowerCase(),password:d.get('pw')});if(error)msg('E-mail ou senha incorretos.')}
 async function esqueci(){const em=document.getElementById('em').value.trim();if(!em)return msg('Digite seu e-mail no campo acima e toque de novo.');msg('Enviando…')
  const {error}=await sb.auth.resetPasswordForEmail(em,{redirectTo:location.origin+'/painel'})
  msg(error?'Não foi possível enviar agora. Tente de novo em alguns minutos.':'Pronto! Se esse e-mail tiver acesso, enviamos o link para criar a senha. Confira a caixa de entrada e o spam.')}
@@ -191,7 +202,9 @@ function adminView(){
  const T=[['produtos','Produtos'],['loja','Dados da loja'],['link','Link e QR Code'],['preco','Precificação']]
  $.innerHTML=`<main class="wrap adm" style="padding:24px 16px 64px"><div class="row sp"><div class="row" style="flex-wrap:nowrap"><div class="logo sm">${store.logo_url?logoImg(store.logo_url):esc(store.name.trim().charAt(0).toUpperCase())}</div><div><h1 style="font-size:22px">${esc(store.name)}</h1><a class="mut" href="/${esc(store.slug)}">/${esc(store.slug)}</a></div></div>${out}</div>
  <div class="tabs">${T.map(([k,n])=>`<button class="${tab==k?'on':''}" onclick="tab='${k}';ed=null;adminView()">${n}</button>`).join('')}</div>
- ${tab=='produtos'?prodView():tab=='loja'?storeForm():tab=='preco'?'<div id="prec"></div>':linkView()}</main>`;if(tab=='preco')precInit()}
+ ${tab=='produtos'?prodView():tab=='loja'?storeForm():tab=='preco'?'<div id="prec"></div>':linkView()}${tab=='loja'?pwCard():''}</main>`;if(tab=='preco')precInit()}
+const pwCard=()=>`<div class="card"><h3 style="font-size:19px">Trocar senha</h3><label>Nova senha (mínimo 6 caracteres)<input id="np" type="password" minlength="6" autocomplete="new-password"></label><button class="btn sm" style="margin-top:12px" onclick="trocaSenha()">Salvar nova senha</button><p class="msg" id="msg2"></p></div>`
+async function trocaSenha(){const v=document.getElementById('np').value,m=document.getElementById('msg2');if(v.length<6){m.textContent='Use pelo menos 6 caracteres.';return}const {error}=await sb.auth.updateUser({password:v});m.textContent=error?'Não foi possível trocar agora.':'Senha alterada!';if(!error)document.getElementById('np').value=''}
 function storeForm(){const s=store||{color:CORES[0][0]},v=k=>esc(s[k]||'')
  return `<form class="card" onsubmit="saveStore(event)"><label>Logomarca</label><div class="row"><div class="logo sm" id="lg">${s.logo_url?logoImg(s.logo_url):'+'}</div><label class="btn ghost sm" style="margin:0;cursor:pointer">Escolher da galeria<input type="file" accept="image/*" hidden onchange="upLogo(this)"></label></div><input type="hidden" name="logo_url" id="lu" value="${v('logo_url')}"><label>Nome da confeitaria<input name="name" value="${v('name')}" required></label>
  ${store?'':'<label>Endereço do cardápio (ex.: doce-sonho)<input name="slug"></label>'}
@@ -246,6 +259,6 @@ function qrPng(url,color){const q=qrcode(0,'M');q.addData(url);q.make();const n=
  const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.fillStyle=color;for(let r=0;r<n;r++)for(let k=0;k<n;k++)if(q.isDark(r,k))x.fillRect((k+m)*s,(r+m)*s,s,s);return c.toDataURL('image/png')}
 function linkView(){const url=location.origin+'/'+store.slug,png=qrPng(url,store.color)
  return `<div class="card"><p>Link do seu cardápio:</p><p><a href="${esc(url)}"><b>${esc(url)}</b></a></p>
- <div class="row" style="margin-top:12px"><button class="btn sm" onclick="navigator.clipboard.writeText('${esc(url)}').then(()=>this.textContent='Link copiado')">Copiar link</button><a class="btn ghost sm" href="${esc(url)}" target="_blank">Ver cardápio</a></div>
+ <div class="row" style="margin-top:12px"><button class="btn sm" onclick="navigator.clipboard.writeText('${esc(url)}').then(()=>this.textContent='Link copiado')">Copiar link</button><a class="btn ghost sm" href="${esc(url)}" target="_blank">Ver cardápio</a><a class="btn sm" style="background:#1fa855" target="_blank" href="https://wa.me/?text=${encodeURIComponent('🧁 Veja nosso cardápio e faça seu pedido: '+url)}">Enviar no WhatsApp</a></div>
  <img src="${png}" alt="QR Code do cardápio" style="width:240px;display:block;margin:20px 0 12px"><a class="btn" href="${png}" download="qrcode-${esc(store.slug)}.png">Baixar QR Code</a></div>`}
 </script></body></html>
