@@ -1,2 +1,2 @@
-const CHECKOUT='COLE_AQUI_O_LINK_DE_CHECKOUT_DA_KIWIFY'
+const CHECKOUT='https://pay.kiwify.com.br/X2YUeKk'
 const PRECO=''
